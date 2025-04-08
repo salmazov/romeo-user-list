@@ -12,8 +12,8 @@ import { UserProfile, BasicUser } from "../types";
 
 dayjs.extend(relativeTime);
 
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/424";
-const ONLINE_STATUS = "ONLINE";
+import { PLACEHOLDER_IMAGE, ONLINE_STATUS } from "../utils/constants";
+import { formatRelativeTime, formatDistance } from "../utils/helpers";
 
 interface Props {
   basic: BasicUser;
@@ -21,7 +21,7 @@ interface Props {
   distanceUnit?: string;
 }
 
-const UserCard: React.FC<Props> = ({ basic, profile, distanceUnit = "km" }) => {
+const UserCard: React.FC<Props> = ({ basic, profile, distanceUnit = 'km' }) => {
   const {
     name,
     picture,
@@ -36,14 +36,12 @@ const UserCard: React.FC<Props> = ({ basic, profile, distanceUnit = "km" }) => {
   } = profile ?? {};
 
   const imageUri = picture?.url || PLACEHOLDER_IMAGE;
-  const lastSeen = dayjs(last_login).fromNow();
-  const distance = location?.distance?.toFixed(1) ?? "-";
+  const lastSeen = formatRelativeTime(last_login);
   const isOnline = online_status === ONLINE_STATUS;
-
+  const distance = formatDistance(location?.distance, distanceUnit);
   const age = personal?.age ?? "-";
   const locationName = location?.name ?? "";
   
-
   const isIncomplete =
     !name || !personal?.age || !headline || !location?.name;
 
